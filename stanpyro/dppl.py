@@ -78,7 +78,7 @@ class PyroModel:
             )
 
             mcmc = pyro.infer.MCMC(
-                kernel, warmups, samples, num_chains=chains, **kwargs
+                kernel, samples, warmup_steps=warmups, num_chains=chains, **kwargs
             )
         return MCMCProxy(mcmc, self.module, thin)
 
@@ -109,8 +109,6 @@ class MCMCProxy:
         self.mcmc.run(**self.kwargs)
         self.samples = self.mcmc.get_samples()
         if self.thin > 1:
-            for x, v in self.samples.items():
-                print(f"{x}: {v.shape}")
             self.samples = {x: self.samples[x][:: self.thin] for x in self.samples}
         if hasattr(self.module, "generated_quantities"):
             gen = self.module.map_generated_quantities(self.samples, **self.kwargs)
