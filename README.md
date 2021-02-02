@@ -2,6 +2,18 @@
 
 Python interface for the Stan to (Num)Pyro compiler.
 
+## Install
+
+```
+pip install .
+```
+
+This will install two packages:
+- `stannumpyro` the numpyro runtime and libraries
+- `stanpyro` the pyro runtime and libraries.
+
+## Getting Started
+
 Let start with the simple eight schools example from Gelman et al (Bayesian Data Analysis: Sec. 5.5, 2003). First save the following Stan code, e.g., in a file 8schools.stan:
 
 ```stan
@@ -23,7 +35,7 @@ model {
 }
 ```
 
-Then to compile and run inference:
+Then to compile and run inference with the NumPyro runtime:
 
 ```python
 from stannumpyro.dppl import NumPyroModel
