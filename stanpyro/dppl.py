@@ -1,6 +1,5 @@
 import os, sys, pathlib, importlib, subprocess
-import numpyro, jax
-import jax.numpy as jnp
+import pyro, torch
 from os.path import splitext, basename, dirname
 from pandas import DataFrame, Series
 
@@ -44,7 +43,7 @@ def compile(mode, stanfile, compiler=["stanc"], recompile=True, build_dir="_tmp"
         _exec(
             compiler
             + [
-                f"--numpyro",
+                f"--pyro",
                 "--mode",
                 mode,
                 "--o",
@@ -55,7 +54,7 @@ def compile(mode, stanfile, compiler=["stanc"], recompile=True, build_dir="_tmp"
     return modname
 
 
-class NumPyroModel:
+class PyroModel:
     def __init__(
         self, stanfile, recompile=True, mode="comprehensive", compiler=["stanc"]
     ):
@@ -72,16 +71,16 @@ class NumPyroModel:
 
     def mcmc(self, samples, warmups=0, chains=1, thin=1, kernel=None, **kwargs):
         if kernel is None:
-            kernel = numpyro.infer.NUTS(
+            kernel = pyro.infer.NUTS(
                 self.module.model,
                 adapt_step_size=True,
-                init_strategy=numpyro.infer.initialization.init_to_sample,
+                init_strategy=pyro.infer.autoguide.initialization.init_to_sample,
             )
 
-            mcmc = numpyro.infer.MCMC(
-                kernel, warmups, samples, num_chains=chains, thinning=thin, **kwargs
+            mcmc = pyro.infer.MCMC(
+                kernel, warmups, samples, num_chains=chains, **kwargs
             )
-        return MCMCProxy(mcmc, self.module)
+        return MCMCProxy(mcmc, self.module, thin)
 
     # def svi(self, optimizer, loss=None):
     #     loss = loss if loss is not None else self.pyro.infer.Trace_ELBO()
@@ -97,17 +96,22 @@ class NumPyroModel:
 
 
 class MCMCProxy:
-    def __init__(self, mcmc, module):
+    def __init__(self, mcmc, module, thin):
         self.mcmc = mcmc
         self.module = module
+        self.thin = thin
         self.kwargs = {}
 
-    def run(self, rng_key, kwargs):
+    def run(self, kwargs):
         self.kwargs = self.module.convert_inputs(kwargs)
         if hasattr(self.module, "transformed_data"):
             self.kwargs.update(self.module.transformed_data(**self.kwargs))
-        self.mcmc.run(rng_key, **self.kwargs)
+        self.mcmc.run(**self.kwargs)
         self.samples = self.mcmc.get_samples()
+        if self.thin > 1:
+            for x, v in self.samples.items():
+                print(f"{x}: {v.shape}")
+            self.samples = {x: self.samples[x][:: self.thin] for x in self.samples}
         if hasattr(self.module, "generated_quantities"):
             gen = self.module.map_generated_quantities(self.samples, **self.kwargs)
             self.samples.update(gen)
@@ -117,10 +121,10 @@ class MCMCProxy:
 
     def summary(self):
         d_mean = _flatten_dict(
-            {k: jnp.mean(jnp.array(v), axis=0) for k, v in self.samples.items()}
+            {k: torch.mean(torch.tensor(v), axis=0) for k, v in self.samples.items()}
         )
         d_std = _flatten_dict(
-            {k: jnp.std(jnp.array(v), axis=0) for k, v in self.samples.items()}
+            {k: torch.std(torch.tensor(v), axis=0) for k, v in self.samples.items()}
         )
         return DataFrame({"mean": Series(d_mean), "std": Series(d_std)})
 
