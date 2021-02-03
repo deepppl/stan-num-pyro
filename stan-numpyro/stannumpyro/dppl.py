@@ -83,17 +83,9 @@ class NumPyroModel:
             )
         return MCMCProxy(mcmc, self.module)
 
-    # def svi(self, optimizer, loss=None):
-    #     loss = loss if loss is not None else self.pyro.infer.Trace_ELBO()
-    #     svi = self.pyro.infer.SVI(self.module.model, self.module.guide, optimizer, loss)
-    #     if self.pyro_backend == "numpyro":
-    #         svi.run = partial(svi.run, jax.random.PRNGKey(0))
-    #     elif self.pyro_backend == "pyro":
-    #         def run(self, num_step, *args, **kwargs):
-    #             for _ in range(num_step):
-    #                 svi.step(*args, **kwargs)
-    #         svi.run = run
-    #     return SVIProxy(svi, self.module)
+    def svi(self, optim, loss):
+        svi = self.pyro.infer.SVI(self.module.model, self.module.guide, optim, loss)
+        return SVIProxy(svi, self.module)
 
 
 class MCMCProxy:
@@ -125,26 +117,25 @@ class MCMCProxy:
         return DataFrame({"mean": Series(d_mean), "std": Series(d_std)})
 
 
-# class SVIProxy(object):
-#     def __init__(self, svi, module):
-#         self.svi = svi
-#         self.module = module
-#         self.args = []
-#         self.kwargs = {}
+class SVIProxy(object):
+    def __init__(self, svi, module):
+        self.svi = svi
+        self.module = module
+        self.args = []
+        self.kwargs = {}
 
-#     def posterior(self, n):
-#         from numpyro import handlers
-#         with handlers.seed(rng_seed=0):
-#             return [self.svi.guide(**self.kwargs) for _ in range(n)]
+    def sample_posterior(self, n):
+        with numpyro.handlers.seed(rng_seed=0):
+            return [self.svi.guide(**self.kwargs) for _ in range(n)]
 
-#     def step(self, *args, **kwargs):
-#         self.kwargs = kwargs
-#         if hasattr(self.module, "transformed_data"):
-#             self.kwargs.update(self.module.transformed_data(**self.kwargs))
-#         return self.svi.step(**self.kwargs)
+    def step(self, *args, **kwargs):
+        self.kwargs = kwargs
+        if hasattr(self.module, "transformed_data"):
+            self.kwargs.update(self.module.transformed_data(**self.kwargs))
+        return self.svi.step(**self.kwargs)
 
-#     def run(self, num_steps, kwargs):
-#         self.kwargs = self.module.convert_inputs(kwargs)
-#         if hasattr(self.module, "transformed_data"):
-#             self.kwargs.update(self.module.transformed_data(**self.kwargs))
-#         return self.svi.run(num_steps, **self.kwargs)
+    def run(self, rng_key, num_steps, kwargs):
+        self.kwargs = self.module.convert_inputs(kwargs)
+        if hasattr(self.module, "transformed_data"):
+            self.kwargs.update(self.module.transformed_data(**self.kwargs))
+        return self.svi.run(rng_key, num_steps, **self.kwargs)
