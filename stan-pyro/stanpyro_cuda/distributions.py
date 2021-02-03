@@ -75,6 +75,8 @@ def _lpdf(d):
 
     return lpdf
 
+_lupdf = _lpdf
+
 
 def _lpmf(d):
     def lpmf(y, *args):
