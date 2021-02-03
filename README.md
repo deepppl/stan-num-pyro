@@ -11,6 +11,6 @@ pip install ./stan-numpyro
 pip install ./stan-pyro
 ```
 
-The README of each package illustrate the interface with a simple example:
+The README of each package illustrates the interface with a simple example:
 - [Pyro](./stan-pyro/README.md)
 - [Numpyro](./stan-numpyro/README.md)
