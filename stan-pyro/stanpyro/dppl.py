@@ -126,10 +126,12 @@ class SVIProxy(object):
         self.args = []
         self.kwargs = {}
 
-    def sample_posterior(self, n):
+    def sample_posterior(self, n, kwargs):
+        if hasattr(self.module, "transformed_data"):
+            self.kwargs.update(self.module.transformed_data(**self.kwargs))
         return [self.svi.guide(**self.kwargs) for _ in range(n)]
 
-    def step(self, *args, **kwargs):
+    def step(self, kwargs):
         self.kwargs = kwargs
         if hasattr(self.module, "transformed_data"):
             self.kwargs.update(self.module.transformed_data(**self.kwargs))
