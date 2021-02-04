@@ -124,7 +124,7 @@ class SVIProxy(object):
         self.module = module
 
     def preprocess(self, kwargs):
-        kwargs.update(self.module.convert_inputs(kwargs))
+        kwargs = self.module.convert_inputs(kwargs)
         if hasattr(self.module, "transformed_data"):
             kwargs.update(self.module.transformed_data(**kwargs))
         return kwargs
