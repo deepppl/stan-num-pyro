@@ -3,6 +3,8 @@ import numpyro, jax
 import jax.numpy as jnp
 from os.path import splitext, basename, dirname
 from pandas import DataFrame, Series
+from operator import attrgetter
+from itertools import product
 
 
 def _flatten_dict(d):
@@ -107,14 +109,38 @@ class MCMCProxy:
     def get_samples(self):
         return self.samples
 
-    def summary(self):
-        d_mean = _flatten_dict(
-            {k: jnp.mean(jnp.array(v), axis=0) for k, v in self.samples.items()}
-        )
-        d_std = _flatten_dict(
-            {k: jnp.std(jnp.array(v), axis=0) for k, v in self.samples.items()}
-        )
-        return DataFrame({"mean": Series(d_mean), "std": Series(d_std)})
+    def summary(self, prob=0.9, exclude_deterministic=True):
+        sites = self.mcmc._states[self.mcmc._sample_field]
+        if isinstance(sites, dict):
+            state_sample_field = attrgetter(self.mcmc._sample_field)(self.mcmc._last_state)
+            if isinstance(state_sample_field, dict):
+                sites = {k: v for k, v in self.mcmc._states[self.mcmc._sample_field].items()
+                         if k in state_sample_field}
+        samples = sites
+        summary_dict = numpyro.diagnostics.summary(samples, prob=prob)
+        columns = list(summary_dict.values())[0].keys()
+        index = []
+        rows = []
+        for name, stats_dict in summary_dict.items():
+            shape = stats_dict["mean"].shape
+            if len(shape) == 0:
+                index.append(name)
+                rows.append(stats_dict.values())
+            else:
+                for idx in product(*map(range, shape)):
+                    idx_str = '[{}]'.format(','.join(map(str, idx)))
+                    index.append(name + idx_str)
+                    rows.append([v[idx] for v in stats_dict.values()])
+        return DataFrame(rows, columns=columns, index=index)
+
+    # def summary(self):
+    #     d_mean = _flatten_dict(
+    #         {k: jnp.mean(jnp.array(v), axis=0) for k, v in self.samples.items()}
+    #     )
+    #     d_std = _flatten_dict(
+    #         {k: jnp.std(jnp.array(v), axis=0) for k, v in self.samples.items()}
+    #     )
+    #     return DataFrame({"mean": Series(d_mean), "std": Series(d_std)})
 
 
 class SVIProxy(object):
