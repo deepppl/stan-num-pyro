@@ -20,6 +20,7 @@ from collections import defaultdict
 
 import torch
 
+
 def _cuda(f):
     def inner(*args, **kwargs):
         return f(*args, **kwargs).cuda()
@@ -32,21 +33,25 @@ ones = _cuda(ones)
 tensor = _cuda(tensor)
 empty = _cuda(empty)
 
+
 def array(x, dtype=None):
-  if isinstance(x, list):
-    return stack([tensor(e, dtype=dtype) for e in x])
-  return tensor(x, dtype=dtype)
+    if isinstance(x, list):
+        return stack([tensor(e, dtype=dtype) for e in x])
+    return tensor(x, dtype=dtype)
+
 
 def vmap(f):
     def vmap(*args):
         n = len(args[0])
         res = defaultdict(list)
         for i in range(n):
-            d = f(*[ x[i] for x in args ])
+            d = f(*[x[i] for x in args])
             for k, v in d.items():
                 res[k].append(v)
         return {k: stack(v) for k, v in res.items()}
+
     return vmap
+
 
 def sample(site_name, dist, *args, **kwargs):
     return pyro.sample(site_name, dist, *args, **kwargs)

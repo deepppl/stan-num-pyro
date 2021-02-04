@@ -6,6 +6,7 @@ from torch import tensor
 from torch import long as dtype_long
 from torch import float as dtype_float
 
+
 def _cuda(f):
     def inner(*args, **kwargs):
         return f(*args, **kwargs).cuda()
@@ -17,11 +18,13 @@ ones = _cuda(ones)
 array = _cuda(tensor)
 ## Utility functions
 
+
 def _XXX_TODO_XXX_(f):
     def todo(*args):
         assert False, f"{f}: not yet implemented"
 
     return todo
+
 
 def _to_float_1(f):
     def f_casted(y, *args):
@@ -29,11 +32,13 @@ def _to_float_1(f):
 
     return f_casted
 
+
 def _to_float_2(f):
     def f_casted(x, y, *args):
         return f(x, array(y, dtype=dtype_float), *args)
 
     return f_casted
+
 
 def _to_float_1_2(f):
     def f_casted(x, y, *args):
@@ -1199,11 +1204,15 @@ binomial_coefficient_log_matrix_real = binomial_coefficient_log_vectorized
 binomial_coefficient_log_array_real = binomial_coefficient_log_vectorized
 
 binomial_coefficient_log_int_vector = _to_float_1(binomial_coefficient_log_vectorized)
-binomial_coefficient_log_int_rowvector = _to_float_1(binomial_coefficient_log_vectorized)
+binomial_coefficient_log_int_rowvector = _to_float_1(
+    binomial_coefficient_log_vectorized
+)
 binomial_coefficient_log_int_matrix = _to_float_1(binomial_coefficient_log_vectorized)
 binomial_coefficient_log_int_array = _to_float_1(binomial_coefficient_log_vectorized)
 binomial_coefficient_log_vector_int = _to_float_2(binomial_coefficient_log_vectorized)
-binomial_coefficient_log_rowvector_int = _to_float_2(binomial_coefficient_log_vectorized)
+binomial_coefficient_log_rowvector_int = _to_float_2(
+    binomial_coefficient_log_vectorized
+)
 binomial_coefficient_log_matrix_int = _to_float_2(binomial_coefficient_log_vectorized)
 binomial_coefficient_log_array_int = _to_float_2(binomial_coefficient_log_vectorized)
 
@@ -1332,54 +1341,108 @@ modified_bessel_first_kind_rowvector_real = modified_bessel_first_kind_vectorize
 modified_bessel_first_kind_matrix_real = modified_bessel_first_kind_vectorized
 modified_bessel_first_kind_array_real = modified_bessel_first_kind_vectorized
 
-modified_bessel_first_kind_int_vector = _to_float_1(modified_bessel_first_kind_vectorized)
-modified_bessel_first_kind_int_rowvector = _to_float_1(modified_bessel_first_kind_vectorized)
-modified_bessel_first_kind_int_matrix = _to_float_1(modified_bessel_first_kind_vectorized)
-modified_bessel_first_kind_int_array = _to_float_1(modified_bessel_first_kind_vectorized)
-modified_bessel_first_kind_vector_int = _to_float_2(modified_bessel_first_kind_vectorized)
-modified_bessel_first_kind_rowvector_int = _to_float_2(modified_bessel_first_kind_vectorized)
-modified_bessel_first_kind_matrix_int = _to_float_2(modified_bessel_first_kind_vectorized)
-modified_bessel_first_kind_array_int = _to_float_2(modified_bessel_first_kind_vectorized)
+modified_bessel_first_kind_int_vector = _to_float_1(
+    modified_bessel_first_kind_vectorized
+)
+modified_bessel_first_kind_int_rowvector = _to_float_1(
+    modified_bessel_first_kind_vectorized
+)
+modified_bessel_first_kind_int_matrix = _to_float_1(
+    modified_bessel_first_kind_vectorized
+)
+modified_bessel_first_kind_int_array = _to_float_1(
+    modified_bessel_first_kind_vectorized
+)
+modified_bessel_first_kind_vector_int = _to_float_2(
+    modified_bessel_first_kind_vectorized
+)
+modified_bessel_first_kind_rowvector_int = _to_float_2(
+    modified_bessel_first_kind_vectorized
+)
+modified_bessel_first_kind_matrix_int = _to_float_2(
+    modified_bessel_first_kind_vectorized
+)
+modified_bessel_first_kind_array_int = _to_float_2(
+    modified_bessel_first_kind_vectorized
+)
 
 # real log_modified_bessel_first_kind(real v, real z)
 # Return the log of the modified Bessel function of the first kind. v does not have to be an integer.
-log_modified_bessel_first_kind_real_real = _XXX_TODO_XXX_("log_modified_bessel_first_kind")
-log_modified_bessel_first_kind_int_real = _to_float_1(log_modified_bessel_first_kind_real_real)
-log_modified_bessel_first_kind_real_int = _to_float_2(log_modified_bessel_first_kind_real_real)
-log_modified_bessel_first_kind_int_int = _to_float_1_2(log_modified_bessel_first_kind_real_real)
+log_modified_bessel_first_kind_real_real = _XXX_TODO_XXX_(
+    "log_modified_bessel_first_kind"
+)
+log_modified_bessel_first_kind_int_real = _to_float_1(
+    log_modified_bessel_first_kind_real_real
+)
+log_modified_bessel_first_kind_real_int = _to_float_2(
+    log_modified_bessel_first_kind_real_real
+)
+log_modified_bessel_first_kind_int_int = _to_float_1_2(
+    log_modified_bessel_first_kind_real_real
+)
 
 # R log_modified_bessel_first_kind(T1 x, T2 y)
 # Vectorized implementation of the log_modified_bessel_first_kind function
-log_modified_bessel_first_kind_vectorized = _XXX_TODO_XXX_("log_modified_bessel_first_kind")
+log_modified_bessel_first_kind_vectorized = _XXX_TODO_XXX_(
+    "log_modified_bessel_first_kind"
+)
 log_modified_bessel_first_kind_vector_vector = log_modified_bessel_first_kind_vectorized
-log_modified_bessel_first_kind_rowvector_rowvector = log_modified_bessel_first_kind_vectorized
+log_modified_bessel_first_kind_rowvector_rowvector = (
+    log_modified_bessel_first_kind_vectorized
+)
 log_modified_bessel_first_kind_matrix_matrix = log_modified_bessel_first_kind_vectorized
 log_modified_bessel_first_kind_array_array = log_modified_bessel_first_kind_vectorized
 
 log_modified_bessel_first_kind_real_vector = log_modified_bessel_first_kind_vectorized
-log_modified_bessel_first_kind_real_rowvector = log_modified_bessel_first_kind_vectorized
+log_modified_bessel_first_kind_real_rowvector = (
+    log_modified_bessel_first_kind_vectorized
+)
 log_modified_bessel_first_kind_real_matrix = log_modified_bessel_first_kind_vectorized
 log_modified_bessel_first_kind_real_array = log_modified_bessel_first_kind_vectorized
 log_modified_bessel_first_kind_vector_real = log_modified_bessel_first_kind_vectorized
-log_modified_bessel_first_kind_rowvector_real = log_modified_bessel_first_kind_vectorized
+log_modified_bessel_first_kind_rowvector_real = (
+    log_modified_bessel_first_kind_vectorized
+)
 log_modified_bessel_first_kind_matrix_real = log_modified_bessel_first_kind_vectorized
 log_modified_bessel_first_kind_array_real = log_modified_bessel_first_kind_vectorized
 
-log_modified_bessel_first_kind_int_vector = _to_float_1(log_modified_bessel_first_kind_vectorized)
-log_modified_bessel_first_kind_int_rowvector = _to_float_1(log_modified_bessel_first_kind_vectorized)
-log_modified_bessel_first_kind_int_matrix = _to_float_1(log_modified_bessel_first_kind_vectorized)
-log_modified_bessel_first_kind_int_array = _to_float_1(log_modified_bessel_first_kind_vectorized)
-log_modified_bessel_first_kind_vector_int = _to_float_2(log_modified_bessel_first_kind_vectorized)
-log_modified_bessel_first_kind_rowvector_int = _to_float_2(log_modified_bessel_first_kind_vectorized)
-log_modified_bessel_first_kind_matrix_int = _to_float_2(log_modified_bessel_first_kind_vectorized)
-log_modified_bessel_first_kind_array_int = _to_float_2(log_modified_bessel_first_kind_vectorized)
+log_modified_bessel_first_kind_int_vector = _to_float_1(
+    log_modified_bessel_first_kind_vectorized
+)
+log_modified_bessel_first_kind_int_rowvector = _to_float_1(
+    log_modified_bessel_first_kind_vectorized
+)
+log_modified_bessel_first_kind_int_matrix = _to_float_1(
+    log_modified_bessel_first_kind_vectorized
+)
+log_modified_bessel_first_kind_int_array = _to_float_1(
+    log_modified_bessel_first_kind_vectorized
+)
+log_modified_bessel_first_kind_vector_int = _to_float_2(
+    log_modified_bessel_first_kind_vectorized
+)
+log_modified_bessel_first_kind_rowvector_int = _to_float_2(
+    log_modified_bessel_first_kind_vectorized
+)
+log_modified_bessel_first_kind_matrix_int = _to_float_2(
+    log_modified_bessel_first_kind_vectorized
+)
+log_modified_bessel_first_kind_array_int = _to_float_2(
+    log_modified_bessel_first_kind_vectorized
+)
 
 # real modified_bessel_second_kind(int v, real z)
 # Return the modified Bessel function of the second kind with order v applied to z defined for positive z and integer v. modified_bessel_second_kind(v,z)={Kv(z)if z>0errorif z≤0 where Kv(z)=π2⋅I−v(z)−Iv(z)sin(vπ)
 modified_bessel_second_kind_real_real = _XXX_TODO_XXX_("modified_bessel_second_kind")
-modified_bessel_second_kind_int_real = _to_float_1(modified_bessel_second_kind_real_real)
-modified_bessel_second_kind_real_int = _to_float_2(modified_bessel_second_kind_real_real)
-modified_bessel_second_kind_int_int = _to_float_1_2(modified_bessel_second_kind_real_real)
+modified_bessel_second_kind_int_real = _to_float_1(
+    modified_bessel_second_kind_real_real
+)
+modified_bessel_second_kind_real_int = _to_float_2(
+    modified_bessel_second_kind_real_real
+)
+modified_bessel_second_kind_int_int = _to_float_1_2(
+    modified_bessel_second_kind_real_real
+)
 
 # R modified_bessel_second_kind(T1 x, T2 y)
 # Vectorized implementation of the modified_bessel_second_kind function
@@ -1398,14 +1461,30 @@ modified_bessel_second_kind_rowvector_real = modified_bessel_second_kind_vectori
 modified_bessel_second_kind_matrix_real = modified_bessel_second_kind_vectorized
 modified_bessel_second_kind_array_real = modified_bessel_second_kind_vectorized
 
-modified_bessel_second_kind_int_vector = _to_float_1(modified_bessel_second_kind_vectorized)
-modified_bessel_second_kind_int_rowvector = _to_float_1(modified_bessel_second_kind_vectorized)
-modified_bessel_second_kind_int_matrix = _to_float_1(modified_bessel_second_kind_vectorized)
-modified_bessel_second_kind_int_array = _to_float_1(modified_bessel_second_kind_vectorized)
-modified_bessel_second_kind_vector_int = _to_float_2(modified_bessel_second_kind_vectorized)
-modified_bessel_second_kind_rowvector_int = _to_float_2(modified_bessel_second_kind_vectorized)
-modified_bessel_second_kind_matrix_int = _to_float_2(modified_bessel_second_kind_vectorized)
-modified_bessel_second_kind_array_int = _to_float_2(modified_bessel_second_kind_vectorized)
+modified_bessel_second_kind_int_vector = _to_float_1(
+    modified_bessel_second_kind_vectorized
+)
+modified_bessel_second_kind_int_rowvector = _to_float_1(
+    modified_bessel_second_kind_vectorized
+)
+modified_bessel_second_kind_int_matrix = _to_float_1(
+    modified_bessel_second_kind_vectorized
+)
+modified_bessel_second_kind_int_array = _to_float_1(
+    modified_bessel_second_kind_vectorized
+)
+modified_bessel_second_kind_vector_int = _to_float_2(
+    modified_bessel_second_kind_vectorized
+)
+modified_bessel_second_kind_rowvector_int = _to_float_2(
+    modified_bessel_second_kind_vectorized
+)
+modified_bessel_second_kind_matrix_int = _to_float_2(
+    modified_bessel_second_kind_vectorized
+)
+modified_bessel_second_kind_array_int = _to_float_2(
+    modified_bessel_second_kind_vectorized
+)
 
 # real falling_factorial(real x, real n)
 # Return the falling factorial of x with power n defined for positive x and real n. falling_factorial(x,n)={(x)nif x>0errorif x≤0 where (x)n=Γ(x+1)Γ(x−n+1)
@@ -1711,11 +1790,14 @@ log_diff_exp_array_int = _to_float_2(log_diff_exp_vectorized)
 # Return the log mixture of the log densities lp1 and lp2 with mixing proportion theta, defined by log_mix(θ,λ1,λ2)=log(θexp(λ1)+(1−θ)exp(λ2))=log_sum_exp(log(θ)+λ1, log(1−θ)+λ2).
 def log_mix_real_real_real(theta, lp1, lp2):
     return log_sum_exp_real_real(log_real(theta) + lp1, log_real(1 - theta) + lp2)
+
+
 # XXX TODO: lifting to other types XXX
 
 # real log_sum_exp(real x, real y)
 # Return the natural logarithm of the sum of the natural exponentiation of x and the natural exponentiation of y. log_sum_exp(x,y)=log(exp(x)+exp(y))
 from torch import logsumexp
+
 
 def log_sum_exp_real_real(x, y):
     max = x if x > y else y
@@ -1723,6 +1805,8 @@ def log_sum_exp_real_real(x, y):
     dy = y - max
     sum_of_exp = exp_real(dx) + exp_real(dy)
     return max + log_real(sum_of_exp)
+
+
 log_sum_exp_int_real = _to_float_1(log_sum_exp_real_real)
 log_sum_exp_real_int = _to_float_2(log_sum_exp_real_real)
 log_sum_exp_int_int = _to_float_1_2(log_sum_exp_real_real)
@@ -2780,8 +2864,10 @@ cumulative_sum_rowvector = lambda x: tcumsum(x, dim=0)
 
 ## 5.13.1 Exponentiated quadratic covariance function
 
+
 def cov_exp_quad(x, alpha, rho):
     return alpha * alpha * texp(-0.5 * torch.pow(torch.cdist(x, x) / rho, 2))
+
 
 # matrix cov_exp_quad(row_vectors x, real alpha, real rho)
 # The covariance matrix with an exponentiated quadratic kernel of x.
@@ -2877,8 +2963,12 @@ matrix_exp_multiply_matrix_matrix = _XXX_TODO_XXX_("matrix_exp_multiply")
 
 # matrix scale_matrix_exp_multiply(real t, matrix A, matrix B)
 # The multiplication of matrix exponential of tA and matrix B; algebraically equivalent to the less efficient form matrix_exp(t * A) * B.
-scale_matrix_exp_multiply_real_matrix_matrix = _XXX_TODO_XXX_("scale_matrix_exp_multiply")
-scale_matrix_exp_multiply_int_matrix_matrix = _to_float_1(scale_matrix_exp_multiply_real_matrix_matrix)
+scale_matrix_exp_multiply_real_matrix_matrix = _XXX_TODO_XXX_(
+    "scale_matrix_exp_multiply"
+)
+scale_matrix_exp_multiply_int_matrix_matrix = _to_float_1(
+    scale_matrix_exp_multiply_real_matrix_matrix
+)
 
 ## 5.14.4 Matrix power
 
@@ -3056,7 +3146,9 @@ csr_to_dense_matrix_int_int_vector_int_int = _XXX_TODO_XXX_("csr_to_dense_matrix
 
 # vector csr_matrix_times_vector(int m, int n, vector w, int[] v, int[] u, vector b)
 # Multiply the m×n matrix represented by values w, column indices v, and row start indices u by the vector b; see compressed row storage.
-csr_matrix_times_vector_int_int_vector_int_int_vector = _XXX_TODO_XXX_("csr_matrix_times_vector")
+csr_matrix_times_vector_int_int_vector_int_int_vector = _XXX_TODO_XXX_(
+    "csr_matrix_times_vector"
+)
 
 ## 7. Mixed Operations
 
@@ -3207,16 +3299,22 @@ algebra_solver_function_vector_vector_array_array = _XXX_TODO_XXX_("algebra_solv
 
 # vector algebra_solver(function algebra_system, vector y_guess, vector theta, real[] x_r, int[] x_i, real rel_tol, real f_tol, int max_steps)
 # Solves the algebraic system, given an initial guess, using the Powell hybrid algorithm with additional control parameters for the solver.
-algebra_solver_function_vector_vector_array_array_real_real_int = _XXX_TODO_XXX_("algebra_solver")
+algebra_solver_function_vector_vector_array_array_real_real_int = _XXX_TODO_XXX_(
+    "algebra_solver"
+)
 # XXX TODO: lifting to other types XXX
 
 # vector algebra_solver_newton(function algebra_system, vector y_guess, vector theta, real[] x_r, int[] x_i)
 # Solves the algebraic system, given an initial guess, using Newton’s method.
-algebra_solver_newton_function_vector_vector_array_array = _XXX_TODO_XXX_("algebra_solver_newton")
+algebra_solver_newton_function_vector_vector_array_array = _XXX_TODO_XXX_(
+    "algebra_solver_newton"
+)
 
 # vector algebra_solver_newton(function algebra_system, vector y_guess, vector theta, real[] x_r, int[] x_i, real rel_tol, real f_tol, int max_steps)
 # Solves the algebraic system, given an initial guess, using Newton’s method with additional control parameters for the solver.
-algebra_solver_newton_function_vector_vector_array_array_real_real_int = _XXX_TODO_XXX_("algebra_solver_newton")
+algebra_solver_newton_function_vector_vector_array_array_real_real_int = _XXX_TODO_XXX_(
+    "algebra_solver_newton"
+)
 # XXX TODO: lifting to other types XXX
 
 ## 9.2 Ordinary Differential Equation (ODE) Solvers
