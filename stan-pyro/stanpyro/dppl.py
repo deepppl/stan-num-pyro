@@ -92,18 +92,17 @@ class MCMCProxy:
         self.mcmc = mcmc
         self.module = module
         self.thin = thin
-        self.kwargs = {}
 
     def run(self, kwargs):
-        self.kwargs = self.module.convert_inputs(kwargs)
+        kwargs = self.module.convert_inputs(kwargs)
         if hasattr(self.module, "transformed_data"):
-            self.kwargs.update(self.module.transformed_data(**self.kwargs))
-        self.mcmc.run(**self.kwargs)
+            kwargs.update(self.module.transformed_data(**kwargs))
+        self.mcmc.run(**kwargs)
         self.samples = self.mcmc.get_samples()
         if self.thin > 1:
             self.samples = {x: self.samples[x][:: self.thin] for x in self.samples}
         if hasattr(self.module, "generated_quantities"):
-            gen = self.module.map_generated_quantities(self.samples, **self.kwargs)
+            gen = self.module.map_generated_quantities(self.samples, **kwargs)
             self.samples.update(gen)
 
     def get_samples(self):
@@ -123,16 +122,20 @@ class SVIProxy(object):
     def __init__(self, svi, module):
         self.svi = svi
         self.module = module
-        self.args = []
-        self.kwargs = {}
+
+    def preprocess(self, kwargs):
+        kwargs.update(self.module.convert_inputs(kwargs))
+        if hasattr(self.module, "transformed_data"):
+            kwargs.update(self.module.transformed_data(**kwargs))
+        return kwargs
 
     def sample_posterior(self, n, kwargs):
-        if hasattr(self.module, "transformed_data"):
-            self.kwargs.update(self.module.transformed_data(**self.kwargs))
-        return [self.svi.guide(**self.kwargs) for _ in range(n)]
+        kwargs = self.preprocess(kwargs)
+        return [self.svi.guide(**kwargs) for _ in range(n)]
 
     def step(self, kwargs):
-        self.kwargs = kwargs
-        if hasattr(self.module, "transformed_data"):
-            self.kwargs.update(self.module.transformed_data(**self.kwargs))
-        return self.svi.step(**self.kwargs)
+        return self.svi.step(**kwargs)
+
+    def run(self, num_steps, kwargs):
+        kwargs = self.preprocess(kwargs)
+        return self.svi.run(num_steps, **kwargs)

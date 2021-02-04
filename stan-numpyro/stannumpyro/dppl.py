@@ -97,13 +97,13 @@ class MCMCProxy:
         self.kwargs = {}
 
     def run(self, rng_key, kwargs):
-        self.kwargs = self.module.convert_inputs(kwargs)
+        kwargs = self.module.convert_inputs(kwargs)
         if hasattr(self.module, "transformed_data"):
-            self.kwargs.update(self.module.transformed_data(**self.kwargs))
-        self.mcmc.run(rng_key, **self.kwargs)
+            kwargs.update(self.module.transformed_data(**kwargs))
+        self.mcmc.run(rng_key, **kwargs)
         self.samples = self.mcmc.get_samples()
         if hasattr(self.module, "generated_quantities"):
-            gen = self.module.map_generated_quantities(self.samples, **self.kwargs)
+            gen = self.module.map_generated_quantities(self.samples, **kwargs)
             self.samples.update(gen)
 
     def get_samples(self):
@@ -148,23 +148,21 @@ class SVIProxy(object):
         self.svi = svi
         self.module = module
         self.args = []
-        self.kwargs = {}
+
+    def preprocess(self, kwargs):
+        kwargs = self.module.convert_inputs(kwargs)
+        if hasattr(self.module, "transformed_data"):
+            kwargs.update(self.module.transformed_data(**kwargs))
+        return kwargs
 
     def sample_posterior(self, n, kwargs):
-        self.kwargs = kwargs
-        if hasattr(self.module, "transformed_data"):
-            self.kwargs.update(self.module.transformed_data(**self.kwargs))
+        kwargs = self.preprocess(kwargs)
         with numpyro.handlers.seed(rng_seed=0):
-            return [self.svi.guide(**self.kwargs) for _ in range(n)]
+            return [self.svi.guide(**kwargs) for _ in range(n)]
 
     def step(self, kwargs):
-        self.kwargs = kwargs
-        if hasattr(self.module, "transformed_data"):
-            self.kwargs.update(self.module.transformed_data(**self.kwargs))
-        return self.svi.step(**self.kwargs)
+        return self.svi.step(**kwargs)
 
     def run(self, rng_key, num_steps, kwargs):
-        self.kwargs = self.module.convert_inputs(kwargs)
-        if hasattr(self.module, "transformed_data"):
-            self.kwargs.update(self.module.transformed_data(**self.kwargs))
-        return self.svi.run(rng_key, num_steps, **self.kwargs)
+        kwargs = self.preprocess(kwargs)
+        return self.svi.run(rng_key, num_steps, **kwargs)

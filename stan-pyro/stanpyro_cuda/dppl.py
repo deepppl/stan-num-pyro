@@ -82,36 +82,27 @@ class PyroModel:
             )
         return MCMCProxy(mcmc, self.module, thin)
 
-    # def svi(self, optimizer, loss=None):
-    #     loss = loss if loss is not None else self.pyro.infer.Trace_ELBO()
-    #     svi = self.pyro.infer.SVI(self.module.model, self.module.guide, optimizer, loss)
-    #     if self.pyro_backend == "numpyro":
-    #         svi.run = partial(svi.run, jax.random.PRNGKey(0))
-    #     elif self.pyro_backend == "pyro":
-    #         def run(self, num_step, *args, **kwargs):
-    #             for _ in range(num_step):
-    #                 svi.step(*args, **kwargs)
-    #         svi.run = run
-    #     return SVIProxy(svi, self.module)
 
+    def svi(self, optim, loss):
+        svi = pyro.infer.SVI(self.module.model, self.module.guide, optim, loss)
+        return SVIProxy(svi, self.module)
 
 class MCMCProxy:
     def __init__(self, mcmc, module, thin):
         self.mcmc = mcmc
         self.module = module
         self.thin = thin
-        self.kwargs = {}
 
     def run(self, kwargs):
-        self.kwargs = self.module.convert_inputs(kwargs)
+        kwargs = self.module.convert_inputs(kwargs)
         if hasattr(self.module, "transformed_data"):
-            self.kwargs.update(self.module.transformed_data(**self.kwargs))
-        self.mcmc.run(**self.kwargs)
+            kwargs.update(self.module.transformed_data(**kwargs))
+        self.mcmc.run(**kwargs)
         self.samples = self.mcmc.get_samples()
         if self.thin > 1:
             self.samples = {x: self.samples[x][:: self.thin] for x in self.samples}
         if hasattr(self.module, "generated_quantities"):
-            gen = self.module.map_generated_quantities(self.samples, **self.kwargs)
+            gen = self.module.map_generated_quantities(self.samples, **kwargs)
             self.samples.update(gen)
 
     def get_samples(self):
@@ -127,26 +118,24 @@ class MCMCProxy:
         return DataFrame({"mean": Series(d_mean), "std": Series(d_std)})
 
 
-# class SVIProxy(object):
-#     def __init__(self, svi, module):
-#         self.svi = svi
-#         self.module = module
-#         self.args = []
-#         self.kwargs = {}
+class SVIProxy(object):
+    def __init__(self, svi, module):
+        self.svi = svi
+        self.module = module
 
-#     def posterior(self, n):
-#         from numpyro import handlers
-#         with handlers.seed(rng_seed=0):
-#             return [self.svi.guide(**self.kwargs) for _ in range(n)]
+    def preprocess(self, kwargs):
+        kwargs.update(self.module.convert_inputs(kwargs))
+        if hasattr(self.module, "transformed_data"):
+            kwargs.update(self.module.transformed_data(**kwargs))
+        return kwargs
 
-#     def step(self, *args, **kwargs):
-#         self.kwargs = kwargs
-#         if hasattr(self.module, "transformed_data"):
-#             self.kwargs.update(self.module.transformed_data(**self.kwargs))
-#         return self.svi.step(**self.kwargs)
+    def sample_posterior(self, n, kwargs):
+        kwargs = self.preprocess(kwargs)
+        return [self.svi.guide(**kwargs) for _ in range(n)]
 
-#     def run(self, num_steps, kwargs):
-#         self.kwargs = self.module.convert_inputs(kwargs)
-#         if hasattr(self.module, "transformed_data"):
-#             self.kwargs.update(self.module.transformed_data(**self.kwargs))
-#         return self.svi.run(num_steps, **self.kwargs)
+    def step(self, kwargs):
+        return self.svi.step(**kwargs)
+
+    def run(self, num_steps, kwargs):
+        kwargs = self.preprocess(kwargs)
+        return self.svi.run(num_steps, **kwargs)
