@@ -16,6 +16,7 @@ setup(
     packages=['stannumpyro'],
     install_requires=[
         "numpyro==0.5.0",
-        "pandas"
+        "pandas",
+        "tensorflow_probability"
     ]
 )
