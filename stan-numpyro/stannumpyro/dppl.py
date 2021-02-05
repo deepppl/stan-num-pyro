@@ -3,24 +3,7 @@ import numpyro, jax
 import jax.numpy as jnp
 from os.path import splitext, basename, dirname
 from pandas import DataFrame, Series
-from operator import attrgetter
 from itertools import product
-
-
-def _flatten_dict(d):
-    def _flatten(name, a):
-        if len(a.shape) == 0:
-            return {name: a.tolist()}
-        else:
-            return {
-                k: v
-                for d in (_flatten(name + f"[{i+1}]", v) for i, v in enumerate(a))
-                for k, v in d.items()
-            }
-
-    return {
-        fk: fv for f in (_flatten(k, v) for k, v in d.items()) for fk, fv in f.items()
-    }
 
 
 def _exec(cmd):
@@ -109,7 +92,7 @@ class MCMCProxy:
     def get_samples(self):
         return self.samples
 
-    def summary(self, prob=0.9, exclude_deterministic=True):
+    def summary(self, prob=0.9):
         summary_dict = numpyro.diagnostics.summary(
             self.samples, prob=prob, group_by_chain=False
         )
@@ -123,7 +106,9 @@ class MCMCProxy:
                 rows.append(stats_dict.values())
             else:
                 for idx in product(*map(range, shape)):
-                    idx_str = "[{}]".format(",".join(map(str, idx)))
+                    idx_str = "[{}]".format(
+                        ",".join(map(str, map(lambda i: i + 1, idx)))
+                    )
                     index.append(name + idx_str)
                     rows.append([v[idx] for v in stats_dict.values()])
         return DataFrame(rows, columns=columns, index=index)

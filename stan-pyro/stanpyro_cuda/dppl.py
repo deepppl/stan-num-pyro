@@ -2,22 +2,7 @@ import os, sys, pathlib, importlib, subprocess
 import pyro, torch
 from os.path import splitext, basename, dirname
 from pandas import DataFrame, Series
-
-
-def _flatten_dict(d):
-    def _flatten(name, a):
-        if len(a.shape) == 0:
-            return {name: a.tolist()}
-        else:
-            return {
-                k: v
-                for d in (_flatten(name + f"[{i+1}]", v) for i, v in enumerate(a))
-                for k, v in d.items()
-            }
-
-    return {
-        fk: fv for f in (_flatten(k, v) for k, v in d.items()) for fk, fv in f.items()
-    }
+from itertools import product
 
 
 def _exec(cmd):
@@ -108,14 +93,26 @@ class MCMCProxy:
     def get_samples(self):
         return self.samples
 
-    def summary(self):
-        d_mean = _flatten_dict(
-            {k: torch.mean(torch.tensor(v), axis=0) for k, v in self.samples.items()}
+    def summary(self, prob=0.9):
+        summary_dict = pyro.infer.mcmc.util.summary(
+            self.samples, prob=prob, group_by_chain=False
         )
-        d_std = _flatten_dict(
-            {k: torch.std(torch.tensor(v), axis=0) for k, v in self.samples.items()}
-        )
-        return DataFrame({"mean": Series(d_mean), "std": Series(d_std)})
+        columns = list(summary_dict.values())[0].keys()
+        index = []
+        rows = []
+        for name, stats_dict in summary_dict.items():
+            shape = stats_dict["mean"].shape
+            if len(shape) == 0:
+                index.append(name)
+                rows.append([v.numpy() for v in stats_dict.values()])
+            else:
+                for idx in product(*map(range, shape)):
+                    idx_str = "[{}]".format(
+                        ",".join(map(str, map(lambda i: i + 1, idx)))
+                    )
+                    index.append(name + idx_str)
+                    rows.append([v[idx].numpy() for v in stats_dict.values()])
+        return DataFrame(rows, columns=columns, index=index)
 
 
 class SVIProxy(object):
