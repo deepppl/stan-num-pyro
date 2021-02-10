@@ -42,14 +42,20 @@ def compile(mode, stanfile, compiler=["stanc"], recompile=True, build_dir="_tmp"
 
 class NumPyroModel:
     def __init__(
-        self, stanfile, recompile=True, mode="comprehensive", compiler=["stanc"]
+        self,
+        stanfile,
+        recompile=True,
+        mode="comprehensive",
+        compiler=["stanc"],
+        build_dir="_tmp",
     ):
 
-        if not os.path.exists("_tmp"):
-            os.makedirs("_tmp")
-            pathlib.Path("_tmp/__init__.py").touch()
+        if not os.path.exists(build_dir):
+            os.makedirs(build_dir)
+            if not os.path.exists(f"{build_dir}/__init__.py"):
+                pathlib.Path(f"{build_dir}/__init__.py").touch()
 
-        modname = compile(mode, stanfile, compiler, recompile, build_dir="_tmp")
+        modname = compile(mode, stanfile, compiler, recompile, build_dir)
 
         self.module = importlib.import_module(modname)
         if modname in sys.modules:
