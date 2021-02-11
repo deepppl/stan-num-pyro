@@ -1,3 +1,4 @@
+import numpyro
 import numpyro.distributions as d
 import numpyro.contrib.tfp.distributions as dtfp
 from numpyro.distributions import constraints, transforms
@@ -107,8 +108,7 @@ def _lccdf(d):
 
 def _rng(d):
     def rng(*args):
-        return d(*args).sample()
-
+        return numpyro.sample("", d(*args))
     return rng
 
 
@@ -287,7 +287,7 @@ bernoulli_logit_glm_lupmf = _unwrap(_lupmf(bernoulli_logit_glm))
 # real binomial_lpmf(ints n | ints N, reals theta)
 # The log binomial probability mass of n successes in N trials given chance of success theta
 
-binomial = _XXX_TODO_XXX_("binomial")
+binomial = d.Binomial
 binomial_lpmf = _lpmf(binomial)
 binomial_lupmf = _lupmf(binomial)
 binomial_cdf = _cdf(binomial)

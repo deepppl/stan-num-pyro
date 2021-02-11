@@ -92,8 +92,9 @@ class MCMCProxy:
         self.mcmc.run(rng_key, **kwargs)
         self.samples = self.mcmc.get_samples()
         if hasattr(self.module, "generated_quantities"):
-            gen = self.module.map_generated_quantities(self.samples, **kwargs)
-            self.samples.update(gen)
+            with numpyro.handlers.seed(rng_seed=0):
+                gen = self.module.map_generated_quantities(self.samples, **kwargs)
+                self.samples.update(gen)
 
     def get_samples(self):
         return self.samples
