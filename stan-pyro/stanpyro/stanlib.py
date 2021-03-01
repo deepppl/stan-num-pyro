@@ -3393,39 +3393,40 @@ map_rect_function = _XXX_TODO_XXX_("map_rect")
 
 # real[ , ] integrate_ode_rk45(function ode, real[] initial_state, real initial_time, real[] times, real[] theta, real[] x_r, int[] x_i)
 # Solves the ODE system for the times provided using the Dormand-Prince algorithm, a 4th/5th order Runge-Kutta method.
-integrate_ode_rk45_function_array_real_array_arrary_array_array = _XXX_TODO_XXX_("integrate_ode_rk45")
-integrate_ode_rk45_function_array_int_array_arrary_array_array = _XXX_TODO_XXX_("integrate_ode_rk45")
+integrate_ode_rk45_function_array_real_array_array_array_array = _XXX_TODO_XXX_("integrate_ode_rk45")
+integrate_ode_rk45_function_array_int_array_array_array_array = _XXX_TODO_XXX_("integrate_ode_rk45")
 
 # real[ , ] integrate_ode_rk45(function ode, real[] initial_state, real initial_time, real[] times, real[] theta, real[] x_r, int[] x_i, real rel_tol, real abs_tol, int max_num_steps)
 # Solves the ODE system for the times provided using the Dormand-Prince algorithm, a 4th/5th order Runge-Kutta method with additional control parameters for the solver.
-integrate_ode_rk45_function_array_real_array_arrary_array_array_real_real_int = _XXX_TODO_XXX_("integrate_ode_rk45")
-integrate_ode_rk45_function_array_int_array_arrary_array_array_real_real_int = _XXX_TODO_XXX_("integrate_ode_rk45")
+integrate_ode_rk45_function_array_real_array_array_array_array_real_real_int = _XXX_TODO_XXX_("integrate_ode_rk45")
+integrate_ode_rk45_function_array_int_array_array_array_array_real_real_int = _XXX_TODO_XXX_("integrate_ode_rk45")
+integrate_ode_rk45_function_array_int_array_array_array_array_real_real_real = _XXX_TODO_XXX_("integrate_ode_rk45")
 # XXX TODO: lifting to other types XXX
 
 # real[ , ] integrate_ode(function ode, real[] initial_state, real initial_time, real[] times, real[] theta, real[] x_r, int[] x_i)
 # Solves the ODE system for the times provided using the Dormand-Prince algorithm, a 4th/5th order Runge-Kutta method.
-integrate_ode_function_array_real_array_arrary_array_array = _XXX_TODO_XXX_("integrate_ode")
+integrate_ode_function_array_real_array_array_array_array = _XXX_TODO_XXX_("integrate_ode")
 # XXX TODO: lifting to other types XXX
 
 # real[ , ] integrate_ode_adams(function ode, real[] initial_state, real initial_time, real[] times, real[] theta, data real[] x_r, data int[] x_i)
 # Solves the ODE system for the times provided using the Adams-Moulton method.
-integrate_ode_adams_function_array_real_array_arrary_array_array = _XXX_TODO_XXX_("integrate_ode_adams")
+integrate_ode_adams_function_array_real_array_array_array_array = _XXX_TODO_XXX_("integrate_ode_adams")
 # XXX TODO: lifting to other types XXX
 
 # real[ , ] integrate_ode_adams(function ode, real[] initial_state, real initial_time, real[] times, real[] theta, data real[] x_r, data int[] x_i, data real rel_tol, data real abs_tol, data int max_num_steps)
 # Solves the ODE system for the times provided using the Adams-Moulton method with additional control parameters for the solver.
-integrate_ode_adams_function_array_real_array_arrary_array_array_real_real_int = _XXX_TODO_XXX_("integrate_ode_adams")
+integrate_ode_adams_function_array_real_array_array_array_array_real_real_int = _XXX_TODO_XXX_("integrate_ode_adams")
 # XXX TODO: lifting to other types XXX
 
 ## 10.1.3 Stiff solver
 
 # real[ , ] integrate_ode_bdf(function ode, real[] initial_state, real initial_time, real[] times, real[] theta, data real[] x_r, data int[] x_i)
 # Solves the ODE system for the times provided using the backward differentiation formula (BDF) method.
-integrate_ode_bdf_function_array_real_array_arrary_array_array = _XXX_TODO_XXX_("integrate_ode_bdf")
-integrate_ode_bdf_function_array_int_array_arrary_array_array = _XXX_TODO_XXX_("integrate_ode_bdf")
+integrate_ode_bdf_function_array_real_array_array_array_array = _XXX_TODO_XXX_("integrate_ode_bdf")
+integrate_ode_bdf_function_array_int_array_array_array_array = _XXX_TODO_XXX_("integrate_ode_bdf")
 
 # real[ , ] integrate_ode_bdf(function ode, real[] initial_state, real initial_time, real[] times, real[] theta, data real[] x_r, data int[] x_i, data real rel_tol, data real abs_tol, data int max_num_steps)
 # Solves the ODE system for the times provided using the backward differentiation formula (BDF) method with additional control parameters for the solver.
-integrate_ode_bdf_function_array_real_array_arrary_array_array_real_real_int = _XXX_TODO_XXX_("integrate_ode_bdf")
-integrate_ode_bdf_function_array_int_array_arrary_array_array_real_real_int = _XXX_TODO_XXX_("integrate_ode_bdf")
+integrate_ode_bdf_function_array_real_array_array_array_array_real_real_int = _XXX_TODO_XXX_("integrate_ode_bdf")
+integrate_ode_bdf_function_array_int_array_array_array_array_real_real_int = _XXX_TODO_XXX_("integrate_ode_bdf")
 # XXX TODO: lifting to other types XXX
