@@ -60,7 +60,7 @@ def _distrib(d, nargs, typ):
             return d(*args)
         else:
             return d(args[0] * tones(args[nargs], dtype=typ), *args[1:nargs])
-
+            
     return d_ext
 
 
@@ -290,7 +290,7 @@ bernoulli_logit_glm_lupmf = _cast1(_lupmf(bernoulli_logit_glm))
 # real binomial_lpmf(ints n | ints N, reals theta)
 # The log binomial probability mass of n successes in N trials given chance of success theta
 
-binomial = _XXX_TODO_XXX_("binomial")
+binomial = d.Binomial
 binomial_lpmf = _lpmf(binomial)
 binomial_lupmf = _lupmf(binomial)
 binomial_cdf = _cdf(binomial)
