@@ -2847,13 +2847,13 @@ cumulative_sum_rowvector = tcumsum
 ## 5.13 Covariance Functions
 ## 5.13.1 Exponentiated quadratic covariance function
 
-from jax.numpy import power as pow
-from jax.numpy.linalg import norm
+# import tensorflow_probability as tfp
 
+# def cov_exp_quad(x, alpha, rho):
+#     kernel = tfp.math.psd_kernels.ExponentiatedQuadratic(amplitude=alpha, length_scale=rho)
+#     return kernel.apply(x, x)
 
-def cov_exp_quad(x, alpha, rho):
-    return alpha * alpha * texp(-0.5 * pow(norm(x) / rho, 2))
-
+cov_exp_quad = _XXX_TODO_XXX_("cov_exp_quad")
 
 # matrix cov_exp_quad(row_vectors x, real alpha, real rho)
 # The covariance matrix with an exponentiated quadratic kernel of x.

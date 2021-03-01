@@ -2864,10 +2864,7 @@ cumulative_sum_rowvector = lambda x: tcumsum(x, dim=0)
 
 ## 5.13.1 Exponentiated quadratic covariance function
 
-
-def cov_exp_quad(x, alpha, rho):
-    return alpha * alpha * texp(-0.5 * torch.pow(torch.cdist(x, x) / rho, 2))
-
+cov_exp_quad = _XXX_TODO_XXX_("cov_exp_quad")
 
 # matrix cov_exp_quad(row_vectors x, real alpha, real rho)
 # The covariance matrix with an exponentiated quadratic kernel of x.
