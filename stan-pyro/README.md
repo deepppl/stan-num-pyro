@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
 ### PyroModel
 
-```
+```python
 class PyroModel(stanfile, recompile=True, mode="comprehensive", compiler=["stanc"], build_dir="_tmp")
 ```
 
@@ -80,7 +80,7 @@ Simplified interface to compile and run Stan models using the [Stan to Pyro comp
 - `build_dir`: name of the build directory (default `"_tmp"`)
 
 
-```
+```python
 mcmc(samples, warmups=0, chains=1, thin=1, kernel=None, **kwargs) -> MCMCProxy
 ```
 
@@ -94,7 +94,7 @@ The default kernel is NUTS.
 - `thin`: Positive integer that controls the fraction of post-warmup samples that are retained (default `1`)
 - `**kwargs`: Other options that are directly passed to Pyro MCMC constructor 
 
-```
+```python
 svi(optim, loss) -> SVIProxy
 ```
 Provide access to Stochastic Variational Inference given an ELBO loss objective (see http://docs.pyro.ai/en/stable/inference_algos.html)
@@ -105,7 +105,7 @@ Provide access to Stochastic Variational Inference given an ELBO loss objective 
 
 ### MCMCProxy
 
-```
+```python
 class MCMCProxy(mcmc, module)
 ```
 
@@ -115,7 +115,7 @@ Wrapper for Pyro MCMC (see http://docs.pyro.ai/en/stable/mcmc.html).
 - `mcmc`: An instance of Numpyro MCMC (obtained from the `mcmc` method of `PyroModel`)
 - `module`: The module containing the compiled code (see `compile` function)
 
-```
+```python
 run(kwargs):
 ```
 
@@ -124,13 +124,13 @@ Run the inference
 **Parameters**
 - `kwargs`: Data passed as a dictionary.
 
-```
+```python
 get_samples()
 ```
 
 Get samples from the MCMC run.
 
-```
+```python
 summary(prob=0.9)
 ```
 
@@ -141,7 +141,7 @@ Print the statistics of posterior samples collected during running this MCMC ins
 
 ### SVIProxy
 
-```
+```python
 class SVIProxy(svi, module)
 ```
 
@@ -151,7 +151,7 @@ Wrapper for NumPyro SVI (see http://num.pyro.ai/en/stable/svi.html).
 - `svi`: An instance of Numpyro SVI (obtained from the `svi` method of `NumPyroModel`)
 - `module`: The module containing the compiled code (see `compile` function)
 
-```
+```python
 preprocess(kwargs)
 ```
 
@@ -160,7 +160,7 @@ Preprocess the data to a format that can be used by Pyro.
 **Parameters**
 - `kwargs`: Data passed as a dictionary.
 
-```
+```python
 step(kwargs)
 ```
 
@@ -169,7 +169,7 @@ Run one SVI step.
 **Parameters**
 - `kwargs`: Data passed as a dictionary (the results of `preprocess`).
 
-```
+```python
 run(num_steps, kwargs):
 ```
 
@@ -179,7 +179,7 @@ Run multiple SVI steps.
 - `num_steps`: Number of steps
 - `kwargs`: Data passed as a dictionary (the results of `preprocess`).
 
-```
+```python
 sample_posterior(n, kwargs)
 ```
 
@@ -192,7 +192,7 @@ Generate samples from the posterior distribution
 
 ### Compile
 
-```
+```python
 compile(mode, stanfile, compiler=["stanc"], recompile=True, build_dir="_tmp")
 ```
 

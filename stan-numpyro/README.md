@@ -65,7 +65,7 @@ Note that `mcmc.run` requires an explicit random seed as a first argument.
 
 ### NumPyroModel
 
-```
+```python
 class NumPyroModel(stanfile, recompile=True, mode="comprehensive", compiler=["stanc"], build_dir="_tmp")
 ```
 
@@ -79,7 +79,7 @@ Simplified interface to compile and run Stan models using the [Stan to NumPyro c
 - `build_dir`: name of the build directory (default `"_tmp"`)
 
 
-```
+```python
 mcmc(samples, warmups=0, chains=1, thin=1, kernel=None, **kwargs) -> MCMCProxy
 ```
 
@@ -93,7 +93,7 @@ The default kernel is NUTS.
 - `thin`: Positive integer that controls the fraction of post-warmup samples that are retained (default `1`)
 - `**kwargs`: Other options that are directly passed to NumPyro MCMC constructor 
 
-```
+```python
 svi(optim, loss) -> SVIProxy
 ```
 Provide access to Stochastic Variational Inference given an ELBO loss objective (see http://num.pyro.ai/en/stable/svi.html)
@@ -104,7 +104,7 @@ Provide access to Stochastic Variational Inference given an ELBO loss objective 
 
 ### MCMCProxy
 
-```
+```python
 class MCMCProxy(mcmc, module)
 ```
 
@@ -114,7 +114,7 @@ Wrapper for NumPyro MCMC (see http://num.pyro.ai/en/stable/mcmc.html).
 - `mcmc`: An instance of NumPyro MCMC (obtained from the `mcmc` method of `NumPyroModel`)
 - `module`: The module containing the compiled code (see `compile` function)
 
-```
+```python
 run(rng_key, kwargs):
 ```
 
@@ -124,13 +124,13 @@ Run the inference
 - `rng_key`: Random number generator key to be used for the sampling (e.g., `jax.random.PRNGKey(0)`).
 - `kwargs`: Data passed as a dictionary.
 
-```
+```python
 get_samples()
 ```
 
 Get samples from the MCMC run.
 
-```
+```python
 summary(prob=0.9)
 ```
 
@@ -141,11 +141,11 @@ Print the statistics of posterior samples collected during running this MCMC ins
 
 ### SVIProxy
 
-```
+```python
 class SVIProxy(svi, module)
 ```
 
-Wrapper for NumPyro SVI (see http://num.pyro.ai/en/stable/svi.html).
+Wrapper for NumPyro SVI (see http://num.pyro.ai/en/stable/svi.html).  
 :warning: Still experimental.
 
 **Parameters**
@@ -154,7 +154,7 @@ Wrapper for NumPyro SVI (see http://num.pyro.ai/en/stable/svi.html).
 
 ### Compile
 
-```
+```python
 compile(mode, stanfile, compiler=["stanc"], recompile=True, build_dir="_tmp")
 ```
 
