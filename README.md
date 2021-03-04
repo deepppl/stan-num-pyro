@@ -1,10 +1,10 @@
 # Stan(Num)Pyro
 
-Python interface for the Stan to (Num)Pyro compiler.
+Python interface for the Stan to (Num)Pyro compiler and runtime libraries.
 
 ## Install
 
-There is one package for each backend -- Pyro and Numpyro -- that can be installed separatedly. 
+There is one package for each backend -- Pyro and Numpyro -- that can be installed separatedly.
 
 ```
 pip install ./stan-numpyro

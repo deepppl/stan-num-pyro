@@ -74,7 +74,7 @@ Simplified interface to compile and run Stan models using the [Stan to NumPyro c
 **Parameters**
 - `stanfile`: location of the stan file
 - `recompile`: Whether to recompile the model (default to `True`)
-- `mode`: compilation mode. One of `"comprehensive"`, `"mixed"`, or `"generative"` (default `"generative"`)
+- `mode`: compilation mode. One of `"comprehensive"`, `"mixed"`, or `"generative"` (default `"comprehensive"`)
 - `compiler`: compiler command as a list (default `["stanc"]`)
 - `build_dir`: name of the build directory (default `"_tmp"`)
 
@@ -91,7 +91,7 @@ The default kernel is NUTS.
 - `warmups`: Number of warmup steps (default `0`)
 - `chains`: Number of MCMC chains to run (default `1`)
 - `thin`: Positive integer that controls the fraction of post-warmup samples that are retained (default `1`)
-- `**kwargs`: Other options that are directly passed to NumPyro MCMC constructor 
+- `**kwargs`: Other options that are directly passed to NumPyro MCMC constructor
 
 ```python
 svi(optim, loss) -> SVIProxy
@@ -145,7 +145,7 @@ Print the statistics of posterior samples collected during running this MCMC ins
 class SVIProxy(svi, module)
 ```
 
-Wrapper for NumPyro SVI (see http://num.pyro.ai/en/stable/svi.html).  
+Wrapper for NumPyro SVI (see http://num.pyro.ai/en/stable/svi.html).
 :warning: Still experimental.
 
 **Parameters**
@@ -161,16 +161,17 @@ compile(mode, stanfile, compiler=["stanc"], recompile=True, build_dir="_tmp")
 Compile a stan model to NumPyro.
 
 **Parameters**
-- `mode`: compilation mode. One of `"comprehensive"`, `"mixed"`, or `"generative"` (default `"generative"`)
+- `mode`: compilation mode. One of `"comprehensive"`, `"mixed"`, or `"generative"`
 - `stanfile`: location of the stan file
 - `compiler`: compiler command as a list (default `["stanc"]`)
 - `recompile`: Whether to recompile the model (default to `True`)
 - `build_dir`: name of the build directory (default `"_tmp"`)
 
-This function generate a python file named after the stan file in the build directory containing the generated code.
+This function generate a python file named after the Stan file in the build directory containing the generated code.
 This file can then be used a python module.
 
 ### Distributions and StanLib
 
 The files `distributions.py` and `stanlib.py` contains the NumPyro implementation of the Stan standard library.
-The complete documentation can be found here: https://mc-stan.org/docs/2_26/functions-reference/discrete-distributions.html
+The complete documentation can be found here: https://mc-stan.org/docs/2_26/functions-reference/index.html
+
