@@ -100,8 +100,9 @@ class MCMCProxy:
         return self.samples
 
     def summary(self, prob=0.9):
+        samples = {k:v.double() for k, v in self.samples.items()}
         summary_dict = pyro.infer.mcmc.util.summary(
-            self.samples, prob=prob, group_by_chain=False
+            samples, prob=prob, group_by_chain=False
         )
         columns = list(summary_dict.values())[0].keys()
         index = []
