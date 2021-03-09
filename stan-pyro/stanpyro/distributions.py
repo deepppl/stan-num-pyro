@@ -1,5 +1,6 @@
 import pyro.distributions as d
-from torch.distributions import constraints, transform_to as transform
+from pyro.distributions import constraints
+from pyro.distributions.transforms import transform_to as transform
 from pyro.distributions.constraints import Constraint
 from numbers import Number
 from torch import (
@@ -60,7 +61,7 @@ def _distrib(d, nargs, typ):
             return d(*args)
         else:
             return d(args[0] * tones(args[nargs], dtype=typ), *args[1:nargs])
-            
+
     return d_ext
 
 
@@ -128,7 +129,7 @@ class improper_uniform(d.Normal):
 class lower_constrained_improper_uniform(improper_uniform):
     def __init__(self, lower_bound=0, shape=[]):
         super().__init__(shape)
-        self.support = constraints.greater_than(lower_bound)
+        self.support = constraints.greater_than_eq(lower_bound)
 
     def sample(self, *args, **kwargs):
         s = super().sample(*args, **kwargs)
@@ -178,19 +179,21 @@ class simplex_constrained_improper_uniform(improper_uniform):
 class unit_constrained_improper_uniform(improper_uniform):
     def __init__(self, shape=[]):
         super().__init__(shape)
+        self.support = constraints.sphere
 
     def sample(self, *args, **kwargs):
         s = super().sample(*args, **kwargs)
-        return s / tnorm(s)
+        return transform(self.support)(s)
 
 
 class ordered_constrained_improper_uniform(improper_uniform):
     def __init__(self, shape=[]):
         super().__init__(shape)
+        self.support = constraints.ordered_vector
 
     def sample(self, *args, **kwargs):
         s = super().sample(*args, **kwargs)
-        return tsort(s)
+        return transform(self.support)(s)
 
 
 class positive_ordered_constrained_improper_uniform(improper_uniform):
@@ -207,7 +210,7 @@ class positive_ordered_constrained_improper_uniform(improper_uniform):
 class cholesky_factor_corr_constrained_improper_uniform(improper_uniform):
     def __init__(self, shape=[]):
         super().__init__(shape[0])
-        self.support = constraints.lower_cholesky
+        self.support = constraints.corr_cholesky
 
     def sample(self, *args, **kwargs):
         s = super().sample(*args, **kwargs)
@@ -241,8 +244,7 @@ class cov_constrained_improper_uniform(improper_uniform):
 class corr_constrained_improper_uniform(improper_uniform):
     def __init__(self, shape=[]):
         super().__init__(shape[0])
-        self.support = "XXX TODO XXX"
-        assert False, "corr_constrained_improper_uniform: not yet implemented"
+        self.support = constraints.corr_matrix
 
     def sample(self, *args, **kwargs):
         s = super().sample(*args, **kwargs)
