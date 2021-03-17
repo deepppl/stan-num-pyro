@@ -69,9 +69,9 @@ class NumPyroModel:
                 init_strategy=numpyro.infer.initialization.init_to_sample,
             )
 
-            mcmc = numpyro.infer.MCMC(
-                kernel, warmups, samples, num_chains=chains, thinning=thin, **kwargs
-            )
+        mcmc = numpyro.infer.MCMC(
+            kernel, warmups, samples, num_chains=chains, thinning=thin, **kwargs
+        )
         return MCMCProxy(mcmc, self.module)
 
     def svi(self, optim, loss):

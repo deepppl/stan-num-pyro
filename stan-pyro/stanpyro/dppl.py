@@ -68,9 +68,9 @@ class PyroModel:
                 init_strategy=pyro.infer.autoguide.initialization.init_to_sample,
             )
 
-            mcmc = pyro.infer.MCMC(
-                kernel, samples, warmup_steps=warmups, num_chains=chains, **kwargs
-            )
+        mcmc = pyro.infer.MCMC(
+            kernel, samples, warmup_steps=warmups, num_chains=chains, **kwargs
+        )
         return MCMCProxy(mcmc, self.module, thin)
 
     def svi(self, optim, loss):
