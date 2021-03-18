@@ -14,5 +14,5 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/deepppl/runtimes/numpyro",
     packages=["stannumpyro"],
-    install_requires=["numpyro==0.5.0", "pandas", "tensorflow_probability"],
+    install_requires=["numpyro==0.6.0", "pandas", "tensorflow_probability"],
 )
