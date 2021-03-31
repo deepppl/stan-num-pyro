@@ -9,7 +9,7 @@ setup(
     name="stan-pyro",
     version="0.0.1",
     author="Guillaume Baudart, Louis Mandel",
-    description="Run Stan models with Numpyro",
+    description="Run Stan models with Pyro",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/deepppl/runtimes/numpyro",
