@@ -12,7 +12,7 @@ setup(
     description="Run Stan models with Pyro",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/deepppl/runtimes/numpyro",
+    url="https://github.com/deepppl/stan-num-pyro",
     packages=["stanpyro", "stanpyro_cuda"],
     install_requires=["pyro-ppl==1.6.0", "pandas"],
 )
