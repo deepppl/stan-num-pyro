@@ -4,6 +4,7 @@ import jax.numpy as jnp
 from os.path import splitext, basename, dirname
 from pandas import DataFrame, Series
 from itertools import product
+from numpyro.handlers import seed, trace
 
 
 def _exec(cmd):
@@ -74,7 +75,7 @@ class NumPyroModel:
         )
         return MCMCProxy(mcmc, self.module)
 
-    def svi(self, optim, loss, guide = None):
+    def svi(self, optim, loss, guide=None):
         if not guide:
             guide = self.module.guide
         svi = numpyro.infer.SVI(self.module.model, guide, optim, loss)
@@ -134,8 +135,20 @@ class SVIProxy(object):
             kwargs.update(self.module.transformed_data(**kwargs))
         return kwargs
 
-    def get_samples(self, rng_key, params, sample_shape=()):
-        return self.svi.guide.sample_posterior(rng_key, params, sample_shape)
+    def get_samples(self, rng_key, params, num_samples):
+        if hasattr(self.svi.guide, "sample_posterior"):
+            return self.svi.guide.sample_posterior(
+                rng_key, params, sample_shape=(num_samples,)
+            )
+        else:
+            exec_trace = trace(seed(self.svi.model, rng_key)).get_trace()
+            predictive = numpyro.infer.Predictive(
+                self.svi.guide,
+                params=params,
+                num_samples=num_samples,
+                return_sites=list(exec_trace.keys()),
+            )
+            return predictive(rng_key)
 
     def init(self, rng_key, kwargs):
         return self.svi.init(rng_key, **kwargs)
@@ -152,8 +165,14 @@ class SVIProxy(object):
     def run(self, rng_key, num_steps, num_samples, kwargs):
         kwargs = self.preprocess(kwargs)
         self.svi_results = self.svi.run(rng_key, num_steps, **kwargs)
-        self.samples = self.get_samples(rng_key, self.svi_results.params, sample_shape=(num_samples,))
-    
+        self.samples = self.get_samples(
+            rng_key, self.svi_results.params, num_samples=num_samples
+        )
+        if hasattr(self.module, "generated_quantities"):
+            with numpyro.handlers.seed(rng_seed=0):
+                gen = self.module.map_generated_quantities(self.samples, **kwargs)
+                self.samples.update(gen)
+
     def evaluate(self, svi_state, kwargs):
         return self.svi.evaluate(svi_state, **kwargs)
 
