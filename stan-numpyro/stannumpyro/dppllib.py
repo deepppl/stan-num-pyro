@@ -6,6 +6,7 @@ from pyro import random_module
 from jax.numpy import array
 from jax.numpy import zeros, ones, matmul, true_divide, floor_divide, transpose, empty
 from jax import jit, vmap
+from jax.random import PRNGKey
 
 dtype_float = tensor.dtype("float32")
 dtype_long = tensor.dtype("int32")
@@ -25,6 +26,10 @@ def observe(site_name, dist, obs):
 
 def factor(site_name, x):
     pyro.factor(site_name, x)
+
+
+def get_element(dist):
+    return dist.sample(PRNGKey(0))
 
 
 from jax.ops import index as ops_index
