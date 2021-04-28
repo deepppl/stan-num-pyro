@@ -74,8 +74,10 @@ class NumPyroModel:
         )
         return MCMCProxy(mcmc, self.module)
 
-    def svi(self, optim, loss):
-        svi = numpyro.infer.SVI(self.module.model, self.module.guide, optim, loss)
+    def svi(self, optim, loss, guide = None):
+        if not guide:
+            guide = self.module.guide
+        svi = numpyro.infer.SVI(self.module.model, guide, optim, loss)
         return SVIProxy(svi, self.module)
 
 
@@ -125,7 +127,6 @@ class SVIProxy(object):
     def __init__(self, svi, module):
         self.svi = svi
         self.module = module
-        self.args = []
 
     def preprocess(self, kwargs):
         kwargs = self.module.convert_inputs(kwargs)
@@ -133,14 +134,48 @@ class SVIProxy(object):
             kwargs.update(self.module.transformed_data(**kwargs))
         return kwargs
 
-    def sample_posterior(self, n, kwargs):
-        kwargs = self.preprocess(kwargs)
-        with numpyro.handlers.seed(rng_seed=0):
-            return [self.svi.guide(**kwargs) for _ in range(n)]
+    def get_samples(self, rng_key, params, sample_shape=()):
+        return self.svi.guide.sample_posterior(rng_key, params, sample_shape)
 
-    def step(self, kwargs):
-        return self.svi.step(**kwargs)
+    def init(self, rng_key, kwargs):
+        return self.svi.init(rng_key, **kwargs)
 
-    def run(self, rng_key, num_steps, kwargs):
+    def get_params(self, svi_state):
+        return self.svi.get_params(svi_state)
+
+    def update(self, svi_state, kwargs):
+        return self.svi.update(svi_state, **kwargs)
+
+    def stable_update(self, svi_state, kwargs):
+        return self.svi.stable_update(svi_state, **kwargs)
+
+    def run(self, rng_key, num_steps, num_samples, kwargs):
         kwargs = self.preprocess(kwargs)
-        return self.svi.run(rng_key, num_steps, **kwargs)
+        self.svi_results = self.svi.run(rng_key, num_steps, **kwargs)
+        self.samples = self.get_samples(rng_key, self.svi_results.params, sample_shape=(num_samples,))
+    
+    def evaluate(self, svi_state, kwargs):
+        return self.svi.evaluate(svi_state, **kwargs)
+
+    def summary(self, samples=None, prob=0.9):
+        if not samples:
+            samples = self.samples
+        summary_dict = numpyro.diagnostics.summary(
+            samples, prob=prob, group_by_chain=False
+        )
+        columns = list(summary_dict.values())[0].keys()
+        index = []
+        rows = []
+        for name, stats_dict in summary_dict.items():
+            shape = stats_dict["mean"].shape
+            if len(shape) == 0:
+                index.append(name)
+                rows.append(stats_dict.values())
+            else:
+                for idx in product(*map(range, shape)):
+                    idx_str = "[{}]".format(
+                        ",".join(map(str, map(lambda i: i + 1, idx)))
+                    )
+                    index.append(name + idx_str)
+                    rows.append([v[idx] for v in stats_dict.values()])
+        return DataFrame(rows, columns=columns, index=index)
