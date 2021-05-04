@@ -1,1 +1,1 @@
-a = 45
+from .dppl import PyroModel, compile

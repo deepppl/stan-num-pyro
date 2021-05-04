@@ -34,7 +34,7 @@ model {
 Then to compile and run inference with the NumPyro runtime:
 
 ```python
-from stannumpyro.dppl import NumPyroModel
+from stannumpyro import NumPyroModel
 from jax import random
 
 if __name__ == "__main__":

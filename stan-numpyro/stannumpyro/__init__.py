@@ -1,1 +1,1 @@
-a = 42
+from .dppl import NumPyroModel, compile

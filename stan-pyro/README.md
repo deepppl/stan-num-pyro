@@ -40,7 +40,7 @@ model {
 Then to compile and run inference with the NumPyro runtime:
 
 ```python
-from stanpyro.dppl import PyroModel
+from stanpyro import PyroModel
 
 if __name__ == "__main__":
 
