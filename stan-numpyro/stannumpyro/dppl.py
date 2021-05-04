@@ -162,7 +162,7 @@ class SVIProxy(object):
     def stable_update(self, svi_state, kwargs):
         return self.svi.stable_update(svi_state, **kwargs)
 
-    def run(self, rng_key, num_steps, num_samples, kwargs):
+    def run(self, rng_key, kwargs, *, num_steps, num_samples):
         kwargs = self.preprocess(kwargs)
         self.svi_results = self.svi.run(rng_key, num_steps, **kwargs)
         self.samples = self.get_samples(
