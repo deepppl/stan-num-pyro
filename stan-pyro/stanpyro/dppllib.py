@@ -61,3 +61,6 @@ def observe(site_name, dist, obs):
 
 def factor(site_name, x):
     pyro.factor(site_name, x)
+
+def get_element(dist):
+    return dist.sample()
