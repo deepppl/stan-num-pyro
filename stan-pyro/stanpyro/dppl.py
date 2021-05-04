@@ -76,6 +76,12 @@ class PyroModel:
     def svi(self, optim, loss):
         svi = pyro.infer.SVI(self.module.model, self.module.guide, optim, loss)
         return SVIProxy(svi, self.module)
+    
+    def get_model(self):
+        return self.module.model
+
+    def get_guide(self):
+        return self.module.model
 
 
 class MCMCProxy:

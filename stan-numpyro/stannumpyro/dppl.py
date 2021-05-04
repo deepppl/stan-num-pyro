@@ -81,6 +81,12 @@ class NumPyroModel:
         svi = numpyro.infer.SVI(self.module.model, guide, optim, loss)
         return SVIProxy(svi, self.module)
 
+    def get_model(self):
+        return self.module.model
+
+    def get_guide(self):
+        return self.module.model
+
 
 class MCMCProxy:
     def __init__(self, mcmc, module):
