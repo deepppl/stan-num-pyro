@@ -141,20 +141,20 @@ class SVIProxy(object):
             kwargs.update(self.module.transformed_data(**kwargs))
         return kwargs
 
-    def get_samples(self, rng_key, params, num_samples):
+    def get_samples(self, rng_key, params, kwargs, num_samples):
         if hasattr(self.svi.guide, "sample_posterior"):
             return self.svi.guide.sample_posterior(
                 rng_key, params, sample_shape=(num_samples,)
             )
         else:
-            exec_trace = trace(seed(self.svi.model, rng_key)).get_trace()
+            exec_trace = trace(seed(self.svi.model, rng_key)).get_trace(**kwargs)
             predictive = numpyro.infer.Predictive(
                 self.svi.guide,
                 params=params,
                 num_samples=num_samples,
                 return_sites=list(exec_trace.keys()),
             )
-            return predictive(rng_key)
+            return predictive(rng_key, kwargs)
 
     def init(self, rng_key, kwargs):
         return self.svi.init(rng_key, **kwargs)
@@ -172,7 +172,7 @@ class SVIProxy(object):
         kwargs = self.preprocess(kwargs)
         self.svi_results = self.svi.run(rng_key, num_steps, **kwargs)
         self.samples = self.get_samples(
-            rng_key, self.svi_results.params, num_samples=num_samples
+            rng_key, self.svi_results.params, kwargs, num_samples=num_samples
         )
         if hasattr(self.module, "generated_quantities"):
             with numpyro.handlers.seed(rng_seed=0):
