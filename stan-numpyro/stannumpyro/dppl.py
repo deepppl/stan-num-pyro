@@ -154,7 +154,7 @@ class SVIProxy(object):
                 num_samples=num_samples,
                 return_sites=list(exec_trace.keys()),
             )
-            return predictive(rng_key, kwargs)
+            return predictive(rng_key, **kwargs)
 
     def init(self, rng_key, kwargs):
         return self.svi.init(rng_key, **kwargs)
