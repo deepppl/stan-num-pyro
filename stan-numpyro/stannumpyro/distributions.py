@@ -160,15 +160,19 @@ class upper_constrained_improper_uniform(improper_uniform):
         return transform(self.support)(s)
 
 
-class simplex_constrained_improper_uniform(improper_uniform):
-    def __init__(self, shape=[]):
-        shape = (*shape[:-1], shape[-1] - 1)  # HACK to get correct output dimensions
-        super().__init__(shape)
-        self.support = constraints.simplex
+def simplex_constrained_improper_uniform(shape=[]):
+    shape = (*shape[:-1], shape[-1] - 1)
+    return d.TransformedDistribution(improper_uniform(shape), transform(constraints.simplex))
 
-    def sample(self, *args, **kwargs):
-        s = super().sample(*args, **kwargs)
-        return transform(self.support)(s)
+# class simplex_constrained_improper_uniform(improper_uniform):
+#     def __init__(self, shape=[]):
+#         shape = (*shape[:-1], shape[-1] - 1)  # HACK to get correct output dimensions
+#         super().__init__(shape)
+#         self.support = constraints.simplex
+
+#     def sample(self, *args, **kwargs):
+#         s = super().sample(*args, **kwargs)
+#         return transform(self.support)(s)
 
 
 class unit_constrained_improper_uniform(improper_uniform):
