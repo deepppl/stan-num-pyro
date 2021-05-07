@@ -199,12 +199,7 @@ class ordered_constrained_improper_uniform(improper_uniform):
 class positive_ordered_constrained_improper_uniform(improper_uniform):
     def __init__(self, shape=[]):
         super().__init__(shape)
-        self.support = constraints.positive
-
-    def sample(self, *args, **kwargs):
-        s = super().sample(*args, **kwargs)
-        s = transform(self.support)(s)
-        return tsort(s)
+        self.support = constraints.positive_ordered_vector
 
 
 class cholesky_factor_corr_constrained_improper_uniform(improper_uniform):
