@@ -160,19 +160,13 @@ class upper_constrained_improper_uniform(improper_uniform):
         return transform(self.support)(s)
 
 
-def simplex_constrained_improper_uniform(shape=[]):
-    shape = (*shape[:-1], shape[-1] - 1)
-    return d.TransformedDistribution(improper_uniform(shape), transform(constraints.simplex))
+class simplex_constrained_improper_uniform(d.Dirichlet):
+    def __init__(self, shape=[]):
+        ones = tones(shape) if shape != [] else 1
+        super(simplex_constrained_improper_uniform, self).__init__(ones)
 
-# class simplex_constrained_improper_uniform(improper_uniform):
-#     def __init__(self, shape=[]):
-#         shape = (*shape[:-1], shape[-1] - 1)  # HACK to get correct output dimensions
-#         super().__init__(shape)
-#         self.support = constraints.simplex
-
-#     def sample(self, *args, **kwargs):
-#         s = super().sample(*args, **kwargs)
-#         return transform(self.support)(s)
+    def log_prob(self, x):
+        return tzeros_like(x)
 
 
 class unit_constrained_improper_uniform(improper_uniform):
@@ -201,6 +195,9 @@ class positive_ordered_constrained_improper_uniform(improper_uniform):
         super().__init__(shape)
         self.support = constraints.positive_ordered_vector
 
+    def sample(self, *args, **kwargs):
+        s = super().sample(*args, **kwargs)
+        return transform(self.support)(s)
 
 class cholesky_factor_corr_constrained_improper_uniform(improper_uniform):
     def __init__(self, shape=[]):
