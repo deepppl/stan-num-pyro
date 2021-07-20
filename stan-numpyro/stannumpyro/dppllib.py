@@ -42,6 +42,7 @@ from jax.lax import scan as lax_scan
 
 from numpyro.contrib.control_flow import scan
 from jax.numpy import arange
+from numpyro.contrib.control_flow import cond as numpyro_cond
 
 
 def fori_loop(lower, upper, body, acc):

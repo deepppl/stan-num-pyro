@@ -14,5 +14,5 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/deepppl/stan-num-pyro",
     packages=["stanpyro", "stanpyro_cuda"],
-    install_requires=["pyro-ppl==1.6.0", "pandas"],
+    install_requires=["pyro-ppl==1.7.0", "pandas"],
 )

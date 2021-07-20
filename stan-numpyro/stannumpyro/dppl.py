@@ -69,9 +69,8 @@ class NumPyroModel:
                 adapt_step_size=True,
                 init_strategy=numpyro.infer.initialization.init_to_sample,
             )
-
         mcmc = numpyro.infer.MCMC(
-            kernel, warmups, samples, num_chains=chains, thinning=thin, **kwargs
+            kernel, num_warmup=warmups, num_samples=samples, num_chains=chains, thinning=thin, **kwargs
         )
         return MCMCProxy(mcmc, self.module)
 

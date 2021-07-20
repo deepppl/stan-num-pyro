@@ -31,8 +31,6 @@ def array(x, dtype=None):
 
 d.BernoulliLogits = lambda logits: d.Bernoulli(logits=logits)
 d.BinomialLogits = lambda logits, n: d.Binomial(n, logits=logits)
-d.Logistic = d.LogisticNormal
-
 
 def _XXX_TODO_XXX_(f):
     def todo(*args):

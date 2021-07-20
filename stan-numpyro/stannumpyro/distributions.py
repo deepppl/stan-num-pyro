@@ -1,6 +1,6 @@
 import numpyro
 import numpyro.distributions as d
-import numpyro.contrib.tfp.distributions as dtfp
+# import numpyro.contrib.tfp.distributions as dtfp
 from numpyro.distributions import constraints, transforms
 from numpyro.distributions.transforms import biject_to as transform
 from numpyro.distributions.constraints import Constraint
@@ -412,7 +412,7 @@ ordered_probit_rng = lambda eta, c: _rng(ordered_probit)(eta, c) + 1
 # real neg_binomial_lpmf(ints n | reals alpha, reals beta)
 # The log negative binomial probability mass of n given shape alpha and inverse scale beta
 
-neg_binomial = _XXX_TODO_XXX_("neg_binomial")
+neg_binomial = _distrib(d.NegativeBinomialLogits, 2, dtype_float)
 neg_binomial_lpmf = _cast1(_lpmf(neg_binomial))
 neg_binomial_lupmf = _cast1(_lupmf(neg_binomial))
 neg_binomial_cdf = _cast1(_cdf(neg_binomial))
@@ -556,7 +556,7 @@ normal_id_glm_lupdf = _unwrap(_lupmf(normal_id_glm))
 # real student_t_lpdf(reals y | reals nu, reals mu, reals sigma)
 # The log of the Student-t density of y given degrees of freedom nu, location mu, and scale sigma
 
-student_t = _distrib(dtfp.StudentT, 3, dtype_float)
+student_t = _distrib(d.StudentT, 3, dtype_float)
 student_t_lpdf = _lpdf(student_t)
 student_t_cdf = _cdf(student_t)
 student_t_lcdf = _lcdf(student_t)
