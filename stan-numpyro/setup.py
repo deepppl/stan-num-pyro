@@ -14,5 +14,5 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/deepppl/stan-num-pyro",
     packages=["stannumpyro"],
-    install_requires=["numpyro==0.7.1", "pandas", "tensorflow_probability"],
+    install_requires=["numpyro==0.8.0", "pandas", "tensorflow_probability"],
 )
