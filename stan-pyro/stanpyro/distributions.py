@@ -15,6 +15,8 @@ from torch import (
     float as dtype_float,
     tensor,
     stack,
+    Tensor,
+
 )
 import torch
 
@@ -58,7 +60,10 @@ def _distrib(d, nargs, typ):
         if len(args) <= nargs:
             return d(*args)
         else:
-            return d(args[0] * tones(args[nargs], dtype=typ), *args[1:nargs])
+            shape = args[nargs]
+            if isinstance(shape, Tensor):
+                shape = shape.tolist()
+            return d(args[0] * tones(shape, dtype=typ), *args[1:nargs])
 
     return d_ext
 
