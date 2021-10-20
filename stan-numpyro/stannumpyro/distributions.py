@@ -20,7 +20,7 @@ from jax.numpy import matmul as tmatmul
 from jax.numpy import sum as tsum
 import jax.numpy as tensor
 from numbers import Number
-from jax.numpy import array
+from jax.numpy import array, ndarray
 
 dtype_float = tensor.dtype("float32")
 dtype_long = tensor.dtype("int32")
@@ -60,8 +60,10 @@ def _distrib(d, nargs, typ):
         if len(args) <= nargs:
             return d(*args)
         else:
-            return d(args[0] * tones(args[nargs], dtype=typ), *args[1:nargs])
-
+            shape = args[nargs]
+            if isinstance(shape, ndarray):
+                shape = shape.tolist()
+            return d(args[0] * tones(shape, dtype=typ), *args[1:nargs])
     return d_ext
 
 
